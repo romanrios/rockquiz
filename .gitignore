@@ -1,0 +1,8 @@
+.vscode
+.cache
+dist
+node_modules
+android
+resources
+src-tauri
+capacitor.config.ts
