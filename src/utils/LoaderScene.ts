@@ -49,9 +49,7 @@ export class LoaderScene extends Container implements IScene {
     private async initializeLoader(): Promise<void>
     {
         await Assets.init({ manifest: manifest });
-
         const bundleIds =  manifest.bundles.map(bundle => bundle.name);
-
         await Assets.loadBundle(bundleIds, this.downloadProgress.bind(this));
     }
 

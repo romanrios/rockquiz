@@ -1,11 +1,6 @@
-import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "./utils/Keyboard";
 import { LoaderScene } from "./utils/LoaderScene";
 import { Manager } from "./utils/Manager";
-import { StatusBar } from "@capacitor/status-bar";
-import { NavigationBar } from "@hugotomazi/capacitor-navigation-bar";
-import { KeepAwake } from "@capacitor-community/keep-awake";
-import { App } from "@capacitor/app";
 
 // Scale mode for all textures, will retain pixelation
 // BaseTexture.defaultOptions.scaleMode = SCALE_MODES.NEAREST;
@@ -17,17 +12,3 @@ Keyboard.initialize();
 const loady: LoaderScene = new LoaderScene();
 Manager.changeScene(loady);
 
-window.addEventListener("contextmenu", e => e.preventDefault());
-
-if (Capacitor.isNativePlatform()) {
-    StatusBar.hide();
-    NavigationBar.hide();
-    KeepAwake.keepAwake();
-    App.addListener("appStateChange", (e) => {
-        if (e.isActive) {
-            // resumo el juego
-        } else {
-            // pauso el juego
-        }
-    })
-}
