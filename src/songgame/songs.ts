@@ -166,7 +166,7 @@ export const songs = [
     },
     {
         audio: "Song33",
-        band: "Mayday",
+        band: "Luces Blancas",
         img: "ImgSong33"
     },
     {
