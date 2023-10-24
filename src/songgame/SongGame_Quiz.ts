@@ -7,30 +7,30 @@ import '@pixi/gif';
 import { songs } from "./songs";
 import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
 import { levels } from "./levels";
+import { ScoreUI } from "../UI/ScoreUI";
 
 export class SongGame_Quiz extends Container implements IScene {
     private bg: Sprite;
     private counter: number;
     private counterCorrect: number;
     private texty: Text = new Text;
-    private textScore: Text;
     private textHelp: Text;
     private textLevel: Text;
-    private star: Sprite;
     private nivelCompletado: Sprite = new Sprite;
-    private star1: Sprite = Sprite.from("Star");
-    private star2: Sprite = Sprite.from("Star");
-    private star3: Sprite = Sprite.from("Star");
-    private star4: Sprite = Sprite.from("Star");
+    private star1: Sprite = Sprite.from("Star2");
+    private star2: Sprite = Sprite.from("Star2");
+    private star3: Sprite = Sprite.from("Star2");
+    private star4: Sprite = Sprite.from("Star2");
     private numeroDePregunta: number = 1;
+    private scoreUI: ScoreUI;
 
     constructor(options: any, level: number) {
         super();
 
         // Background + Text help
         this.bg = Sprite.from("QuizBackground");
-        this.bg.anchor.set(0.5),
-            this.bg.position.set(Manager.width / 2, Manager.height / 2)
+        this.bg.anchor.set(0.5);
+        this.bg.position.set(Manager.width / 2, Manager.height / 2);
         this.addChild(this.bg);
 
         this.textHelp = new Text("ADIVINA LA BANDA", {
@@ -46,20 +46,8 @@ export class SongGame_Quiz extends Container implements IScene {
         this.addChild(this.textHelp);
 
         // UI SCORE
-        this.star = Sprite.from("Star");
-        this.star.anchor.set(0.5);
-        this.star.position.set(550, 75);
-        this.addChild(this.star);
-
-        this.textScore = new Text(Manager.score, {
-            fontFamily: "Montserrat ExtraBold",
-            fill: 0xFFFFFF,
-            align: "center",
-            fontSize: 50,
-        });
-        this.textScore.anchor.set(0.5);
-        this.textScore.position.set(640, 75)
-        this.addChild(this.textScore);
+        this.scoreUI = new ScoreUI();
+        this.addChild(this.scoreUI);
 
         // UI Back button
         const backButton = new SongButton("", 110);
@@ -172,9 +160,9 @@ export class SongGame_Quiz extends Container implements IScene {
                 button.onpointerup = () => {
 
                     if (opcion === cancionCorrecta) {
-                        this.starRotation();
+                        this.scoreUI.animacion();
                         Manager.score++;
-                        this.textScore.text = Manager.score;
+                        this.scoreUI.actualizarPuntaje();
                         this.counterCorrect += 1;
                         button.setButtonColor(0x00C18C);
                         this.eventMode = "none";
@@ -227,11 +215,10 @@ export class SongGame_Quiz extends Container implements IScene {
 
                             this.bg.alpha = 0.75;
 
-                            backButton.alpha=0.5;
-                            this.star.alpha=0.5;
-                            this.textScore.alpha=0.5;
-                            cinta.alpha=0.5;
-                            this.textLevel.alpha=0.5;
+                            backButton.alpha = 0.5;
+                            this.scoreUI.alpha = 0.5;
+                            cinta.alpha = 0.5;
+                            this.textLevel.alpha = 0.5;
 
                             this.nivelCompletado = Sprite.from("NivelCompletado");
                             this.nivelCompletado.anchor.set(0.5);
@@ -282,13 +269,6 @@ export class SongGame_Quiz extends Container implements IScene {
 
 
 
-
-
-
-
-
-
-
     // UPDATE ANIMACION NIVEL COMPLEADO
     currentTime = 0; // Tiempo actual para el cálculo de la escala
     update(deltaTime: number, _deltaFrame: number): void {
@@ -302,21 +282,6 @@ export class SongGame_Quiz extends Container implements IScene {
     }
 
 
-    private starRotation(): void {
-        const targetRotation = this.star.rotation + Math.PI * 2; // Giro completo de 360 grados en radianes
-        const frames = 60; // Número de fotogramas para completar la animación
-        const increment = (targetRotation - this.star.rotation) / frames;
 
-        let currentFrame = 0;
-        const rotationAnimation = setInterval(() => {
-            this.star.rotation += increment;
-            currentFrame++;
-
-            if (currentFrame >= frames) {
-                clearInterval(rotationAnimation);
-                // La animación ha finalizado, puedes realizar alguna acción adicional aquí si es necesario
-            }
-        }, 16.67); // Aproximadamente 60 fotogramas por segundo (1000 ms / 60 = 16.67)
-    }
 
 }

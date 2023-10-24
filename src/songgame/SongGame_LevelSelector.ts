@@ -7,6 +7,7 @@ import { levels } from "./levels";
 import { SongGame_Puzzle } from "./SongGame_Puzzle";
 import { SongGame_Quiz } from "./SongGame_Quiz";
 import { SongGame_Title } from "./SongGame_Title";
+import { ScoreUI } from "../UI/ScoreUI";
 
 export class SongGame_LevelSelector extends Container implements IScene {
 
@@ -17,7 +18,7 @@ export class SongGame_LevelSelector extends Container implements IScene {
     private rayo2: Sprite;
     private rayo1: Sprite;
     private buttonHighlight: Graphics;
-    private star: Sprite;
+    private scoreUI: ScoreUI;
 
     constructor() {
         super();
@@ -48,23 +49,10 @@ export class SongGame_LevelSelector extends Container implements IScene {
         };
         this.addChild(backButton);
 
-
-
         // UI SCORE
-        this.star = Sprite.from("Star");
-        this.star.anchor.set(0.5);
-        this.star.position.set(550, 75);
-        this.addChild(this.star);
-
-        const textScore = new Text(Manager.score, {
-            fontFamily: "Montserrat ExtraBold",
-            fill: 0xFFFFFF,
-            align: "center",
-            fontSize: 50,
-        });
-        textScore.anchor.set(0.5);
-        textScore.position.set(640, 75)
-        this.addChild(textScore);
+        this.scoreUI = new ScoreUI();
+        this.addChild(this.scoreUI);
+        
 
         const texty = new Text("N I V E L E S", {
             fontFamily: "Montserrat ExtraBold",

@@ -18,6 +18,7 @@ export const manifest: ResolverManifest = {
                 BackArrow: "./songgame/backarrow.svg",
                 Cinta: "./songgame/cinta.png",
                 Star: "./songgame/star.png",
+                Star2: "./songgame/star2.png",
                 LevelSelectorBanner: "./songgame/levelselectorbanner.png",
                 TitleLogo: "./songgame/titlelogo.png",
                 TitleBackground: "./songgame/titlebackground.jpg",

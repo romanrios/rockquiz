@@ -6,6 +6,7 @@ import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
 import { sound } from "@pixi/sound";
 import { levels } from "./levels";
 import { SongGame_Quiz } from "./SongGame_Quiz";
+import { ScoreUI } from "../UI/ScoreUI";
 
 export class SongGame_Puzzle extends Container implements IScene {
 
@@ -17,10 +18,9 @@ export class SongGame_Puzzle extends Container implements IScene {
 
     private circleMask: Graphics;
     private imgComplete: any
-    private textScore: Text;
     private textHelp: Text;
     private textLevel: Text;
-    private star: Sprite;
+    private scoreUI: ScoreUI;
 
     constructor(img: string, difficulty: number) {
         super();
@@ -57,20 +57,8 @@ export class SongGame_Puzzle extends Container implements IScene {
         });
 
         // UI SCORE
-        this.star = Sprite.from("Star");
-        this.star.anchor.set(0.5);
-        this.star.position.set(550, 75);
-        this.addChild(this.star);
-
-        this.textScore = new Text(Manager.score, {
-            fontFamily: "Montserrat ExtraBold",
-            fill: 0xFFFFFF,
-            align: "center",
-            fontSize: 50,
-        });
-        this.textScore.anchor.set(0.5);
-        this.textScore.position.set(640, 75)
-        this.addChild(this.textScore);
+        this.scoreUI = new ScoreUI();
+        this.addChild(this.scoreUI);
 
         // UI LEVEL
         const cinta = Sprite.from("Cinta");
@@ -229,11 +217,11 @@ export class SongGame_Puzzle extends Container implements IScene {
     }
 
     private puzzleCompleted(): void {
-        this.starRotation();
+        this.scoreUI.animacion();
         Manager.levelsAvailable[Manager.currentLevel + 1] = true;
         this.textHelp.text = "ESCUCHA Y MEMORIZA\nEL NOMBRE DE LA BANDA";
         Manager.score++;
-        this.textScore.text = Manager.score;
+        this.scoreUI.actualizarPuntaje();
         sound.play("Correct");
         this.disableButtons();
         const texty: Text = new Text(
@@ -331,21 +319,6 @@ export class SongGame_Puzzle extends Container implements IScene {
         }, duration * 1000 / frames);
     }
 
-    private starRotation(): void {
-        const targetRotation = this.star.rotation + Math.PI * 2; // Giro completo de 360 grados en radianes
-        const frames = 60; // Número de fotogramas para completar la animación
-        const increment = (targetRotation - this.star.rotation) / frames;
-
-        let currentFrame = 0;
-        const rotationAnimation = setInterval(() => {
-            this.star.rotation += increment;
-            currentFrame++;
-
-            if (currentFrame >= frames) {
-                clearInterval(rotationAnimation);
-                // La animación ha finalizado, puedes realizar alguna acción adicional aquí si es necesario
-            }
-        }, 16.67); // Aproximadamente 60 fotogramas por segundo (1000 ms / 60 = 16.67)
-    }
+    
 
 }
