@@ -2,11 +2,15 @@ import { Container, Rectangle, Sprite, Text, Graphics, Texture } from "pixi.js";
 import { IScene } from "../utils/IScene";
 import { Manager } from "../utils/Manager";
 import { SongButton } from "../UI/SongButton";
-import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
 import { sound } from "@pixi/sound";
 import { levels } from "./levels";
 import { SongGame_Quiz } from "./SongGame_Quiz";
 import { ScoreUI } from "../UI/ScoreUI";
+import { Tween } from "tweedle.js";
+import { ButtonBack } from "../UI/ButtonBack";
+import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
+import { LevelTitle } from "../UI/LevelTitle";
+
 
 export class SongGame_Puzzle extends Container implements IScene {
 
@@ -19,7 +23,6 @@ export class SongGame_Puzzle extends Container implements IScene {
     private circleMask: Graphics;
     private imgComplete: any
     private textHelp: Text;
-    private textLevel: Text;
     private scoreUI: ScoreUI;
 
     constructor(img: string, difficulty: number) {
@@ -44,44 +47,20 @@ export class SongGame_Puzzle extends Container implements IScene {
         this.addChild(this.textHelp);
 
         // UI Back button
-        const backButton = new SongButton("", 110);
-        this.addChild(backButton);
-        backButton.position.set(90, 90)
-        const back = Sprite.from("BackArrow");
-        back.position.set(-30, -28);
-        back.scale.set(0.7, 0.7);
-        backButton.addChild(back);
-        backButton.on("pointerup", () => {
+        const regresar = new ButtonBack;
+        regresar.on("pointerup", () => {
             sound.stopAll();
             Manager.changeScene(new SongGame_LevelSelector)
         });
+        this.addChild(regresar);
 
         // UI SCORE
-        this.scoreUI = new ScoreUI();
+        this.scoreUI = new ScoreUI;
         this.addChild(this.scoreUI);
 
         // UI LEVEL
-        const cinta = Sprite.from("Cinta");
-        cinta.position.set(228, 103);
-        this.addChild(cinta);
-
-        this.textLevel = new Text(`NIVEL ${levels[Manager.currentLevel].name}`, {
-            fontFamily: "Montserrat ExtraBold",
-            fill: 0x000000,
-            align: "center",
-            fontSize: 30,
-        });
-        this.textLevel.anchor.set(0.5);
-        this.textLevel.position.set(360, 136)
-        this.addChild(this.textLevel);
-
-
-
-
-
-
-
-
+        const levelTitle = new LevelTitle();
+        this.addChild(levelTitle);
 
         // Dividir la imagen en piezas
         const texture = Texture.from(img);
@@ -137,16 +116,12 @@ export class SongGame_Puzzle extends Container implements IScene {
                 this.isAnimating = true; // Marcar que se está realizando una animación
 
                 // activa animación de rotación
-                const targetRotation = sprite.angle + 90;
-                const duration = 0.1; // Duración de la animación en segundos
-                const frames = 60; // Número de fotogramas para la animación
-                const increment = (targetRotation - sprite.angle) / frames;
                 if (index === this.specialPieceIndex && Manager.currentLevel > 9) {
                     const linkedPiece = this.getLinkedPiece(sprite);
-                    this.animateRotation(sprite, targetRotation, duration, frames, increment);
-                    this.animateRotation(linkedPiece, targetRotation, duration, frames, increment);
+                    this.animateRotation(sprite);
+                    this.animateRotation(linkedPiece);
                 } else {
-                    this.animateRotation(sprite, targetRotation, duration, frames, increment);
+                    this.animateRotation(sprite);
                 }
             });
 
@@ -207,7 +182,7 @@ export class SongGame_Puzzle extends Container implements IScene {
 
 
     private checkComplete(): void {
-        const tolerance = 5; // Rango de tolerancia en grados
+        const tolerance = 1; // Rango de tolerancia en grados
         const isComplete = this.imgSong.every(sprite => Math.abs(sprite.angle % 360) <= tolerance);
         this.isImageComplete = isComplete;
 
@@ -301,24 +276,18 @@ export class SongGame_Puzzle extends Container implements IScene {
         return this.imgSong[linkedIndex];
     }
 
-    private animateRotation(sprite: Sprite, targetRotation: number, duration: number, frames: number, increment: number): void {
-        let currentFrame = 0;
-        const animation = setInterval(() => {
-            sprite.angle += increment;
-            currentFrame++;
 
-            if (currentFrame >= frames) {
-                clearInterval(animation);
+
+    private animateRotation(sprite: Sprite) {
+        new Tween(sprite)
+            .to({ angle: sprite.angle + 90 }, 200)
+            .start()
+            .onComplete(() => {
                 this.isAnimating = false; // Marcar que la animación ha finalizado
                 this.checkComplete();
-            } else if (sprite.angle === targetRotation) {
-                clearInterval(animation);
-                this.isAnimating = false; // Marcar que la animación ha finalizado
-                this.checkComplete();
-            }
-        }, duration * 1000 / frames);
+            })
     }
 
-    
+
 
 }

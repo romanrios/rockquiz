@@ -56,8 +56,8 @@ export class Manager {
     // Use this function ONCE to start the entire machinery
     public static initialize(width: number, height: number, background: number): void {
 
-        // levelsCompleted 50 niveles false
-        for (let i = 0; i < 50; i++) {
+        // levelsCompleted 51 niveles false
+        for (let i = 0; i < 51; i++) {
             Manager._levelsAvailable[i] = false;
         }
         Manager._levelsAvailable[0] = true;

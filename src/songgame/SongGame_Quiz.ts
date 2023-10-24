@@ -6,8 +6,11 @@ import { sound } from '@pixi/sound';
 import '@pixi/gif';
 import { songs } from "./songs";
 import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
-import { levels } from "./levels";
 import { ScoreUI } from "../UI/ScoreUI";
+import { ButtonBack } from "../UI/ButtonBack";
+import { Tween } from "tweedle.js";
+import { LevelTitle } from "../UI/LevelTitle";
+import { SongGame_Finish } from "./SongGame_Finish";
 
 export class SongGame_Quiz extends Container implements IScene {
     private bg: Sprite;
@@ -15,7 +18,6 @@ export class SongGame_Quiz extends Container implements IScene {
     private counterCorrect: number;
     private texty: Text = new Text;
     private textHelp: Text;
-    private textLevel: Text;
     private nivelCompletado: Sprite = new Sprite;
     private star1: Sprite = Sprite.from("Star2");
     private star2: Sprite = Sprite.from("Star2");
@@ -23,6 +25,7 @@ export class SongGame_Quiz extends Container implements IScene {
     private star4: Sprite = Sprite.from("Star2");
     private numeroDePregunta: number = 1;
     private scoreUI: ScoreUI;
+    regresar: ButtonBack;
 
     constructor(options: any, level: number) {
         super();
@@ -32,6 +35,12 @@ export class SongGame_Quiz extends Container implements IScene {
         this.bg.anchor.set(0.5);
         this.bg.position.set(Manager.width / 2, Manager.height / 2);
         this.addChild(this.bg);
+
+        new Tween(this.bg)
+            .to({ alpha: 0.8 }, 1000)
+            .repeat(Infinity)
+            .start()
+            .yoyo(true)
 
         this.textHelp = new Text("ADIVINA LA BANDA", {
             fontFamily: "Montserrat ExtraBold",
@@ -46,37 +55,20 @@ export class SongGame_Quiz extends Container implements IScene {
         this.addChild(this.textHelp);
 
         // UI SCORE
-        this.scoreUI = new ScoreUI();
+        this.scoreUI = new ScoreUI;
         this.addChild(this.scoreUI);
 
         // UI Back button
-        const backButton = new SongButton("", 110);
-        this.addChild(backButton);
-        backButton.position.set(90, 90)
-        const back = Sprite.from("BackArrow");
-        back.position.set(-30, -28);
-        back.scale.set(0.7, 0.7);
-        backButton.addChild(back);
-        backButton.on("pointerup", () => {
+        this.regresar = new ButtonBack;
+        this.regresar.on("pointerup", () => {
             sound.stopAll();
-            Manager.changeScene(new SongGame_LevelSelector)
+            Manager.changeScene(new SongGame_LevelSelector())
         });
+        this.addChild(this.regresar);
 
-        // UI LEVEL
-        const cinta = Sprite.from("Cinta");
-        cinta.position.set(228, 103);
-        this.addChild(cinta);
-
-        this.textLevel = new Text(`NIVEL ${levels[Manager.currentLevel].name}`, {
-            fontFamily: "Montserrat ExtraBold",
-            fill: 0x000000,
-            align: "center",
-            fontSize: 30,
-        });
-        this.textLevel.anchor.set(0.5);
-        this.textLevel.position.set(360, 136)
-        this.addChild(this.textLevel);
-
+        // UI LEVEL        
+        const levelTitle = new LevelTitle();
+        this.addChild(levelTitle);
 
         this.star1.position.set(175, 670);
         this.star2.position.set(285, 670);
@@ -87,9 +79,6 @@ export class SongGame_Quiz extends Container implements IScene {
         this.star2.scale.set(1.2);
         this.star3.scale.set(1.2);
         this.star4.scale.set(1.2);
-
-
-
 
         // Función Generar Pregunta
         const NUMERO_OPCIONES = options; // Número total de opciones por pregunta
@@ -167,6 +156,37 @@ export class SongGame_Quiz extends Container implements IScene {
                         button.setButtonColor(0x00C18C);
                         this.eventMode = "none";
                         sound.play("Correct");
+
+
+                        if (this.numeroDePregunta == 1) {
+                            new Tween(this.star1)
+                                .to({ y: this.star1.y - 40 * Math.random() - 20 }, 300)
+                                .start()
+                                .yoyo(true)
+                                .repeat(Infinity)
+
+                        } if (this.numeroDePregunta == 2) {
+                            new Tween(this.star2)
+                                .to({ y: this.star1.y - 40 * Math.random() - 20 }, 300)
+                                .start()
+                                .yoyo(true)
+                                .repeat(Infinity)
+
+                        } if (this.numeroDePregunta == 3) {
+                            new Tween(this.star3)
+                                .to({ y: this.star1.y - 40 * Math.random() - 20 }, 300)
+                                .start()
+                                .yoyo(true)
+                                .repeat(Infinity)
+
+                        } if (this.numeroDePregunta == 4) {
+                            new Tween(this.star4)
+                                .to({ y: this.star1.y - 40 * Math.random() - 20 }, 300)
+                                .start()
+                                .yoyo(true)
+                                .repeat(Infinity)
+                        }
+
                     }
 
                     if (opcion !== cancionCorrecta) {
@@ -205,31 +225,34 @@ export class SongGame_Quiz extends Container implements IScene {
                             button1.position.set(Manager.width / 2, 1005)
 
                             // define cual es el puzzle del nivel siguiente
+
                             button1.on("pointerup", () => {
-                                Manager.changeScene(new SongGame_LevelSelector);
-                            })
+                                if (Manager.currentLevel == 49) {
+                                    Manager.changeScene(new SongGame_Finish);
+                                } else {
+                                    Manager.changeScene(new SongGame_LevelSelector);
+                                }
+                            });
 
                             this.addChild(button1);
                             this.removeChild(soundWave);
                             this.removeChild(this.textHelp);
-
-                            this.bg.alpha = 0.75;
-
-                            backButton.alpha = 0.5;
-                            this.scoreUI.alpha = 0.5;
-                            cinta.alpha = 0.5;
-                            this.textLevel.alpha = 0.5;
 
                             this.nivelCompletado = Sprite.from("NivelCompletado");
                             this.nivelCompletado.anchor.set(0.5);
                             this.nivelCompletado.position.set(Manager.width / 2, 440);
                             this.addChild(this.nivelCompletado);
 
+                            new Tween(this.nivelCompletado.scale)
+                                .to({ x: 1.03, y: 1.03 }, 400)
+                                .start()
+                                .yoyo(true)
+                                .repeat(Infinity)
+
                             this.addChild(this.star1);
                             this.addChild(this.star2);
                             this.addChild(this.star3);
                             this.addChild(this.star4);
-
 
                             this.texty = new Text(
                                 `ACERTASTE ${this.counterCorrect} DE 4`,
@@ -266,22 +289,6 @@ export class SongGame_Quiz extends Container implements IScene {
     }
 
 
-
-
-
-    // UPDATE ANIMACION NIVEL COMPLEADO
-    currentTime = 0; // Tiempo actual para el cálculo de la escala
-    update(deltaTime: number, _deltaFrame: number): void {
-        const scaleMin = 0.97; // Escala mínima del objeto
-        const scaleMax = 1.03; // Escala máxima del objeto
-        const beatDuration = 800; // Duración de un latido en milisegundos
-        this.currentTime += deltaTime;
-        const t = (this.currentTime % beatDuration) / beatDuration;
-        const scale = scaleMin + Math.abs(Math.sin(t * Math.PI)) * (scaleMax - scaleMin);
-        this.nivelCompletado.scale.set(scale);
+    update(_deltaTime: number, _deltaFrame: number): void {
     }
-
-
-
-
 }

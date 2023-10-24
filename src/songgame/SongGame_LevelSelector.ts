@@ -6,8 +6,10 @@ import { sound } from "@pixi/sound";
 import { levels } from "./levels";
 import { SongGame_Puzzle } from "./SongGame_Puzzle";
 import { SongGame_Quiz } from "./SongGame_Quiz";
-import { SongGame_Title } from "./SongGame_Title";
 import { ScoreUI } from "../UI/ScoreUI";
+import { ButtonBack } from "../UI/ButtonBack";
+import { SongGame_Title } from "./SongGame_Title";
+import { Tween, Easing} from "tweedle.js"
 
 export class SongGame_LevelSelector extends Container implements IScene {
 
@@ -23,6 +25,14 @@ export class SongGame_LevelSelector extends Container implements IScene {
     constructor() {
         super();
 
+        this.y=-1200;
+
+        new Tween(this)
+          .to({y:0},600)
+          .start()
+          .easing(Easing.Quintic.Out)
+
+
         // Fondo y botón Regresar
         const background = Sprite.from("BlackPaper");
         this.addChild(background);
@@ -35,24 +45,17 @@ export class SongGame_LevelSelector extends Container implements IScene {
         const levelSelectorBanner = Sprite.from("LevelSelectorBanner");
         this.addChild(levelSelectorBanner);
 
-        const backButton = new SongButton("", 110);
-        this.addChild(backButton);
-        backButton.position.set(90, 90)
-        const back = Sprite.from("BackArrow");
-        back.position.set(-30, -28);
-        back.scale.set(0.7, 0.7);
-        backButton.addChild(back);
-
-        backButton.onpointerup = () => {
+        // UI Back button
+        const regresar = new ButtonBack;
+        regresar.on("pointerup", () => {
             sound.stopAll();
-            Manager.changeScene(new SongGame_Title());
-        };
-        this.addChild(backButton);
+            Manager.changeScene(new SongGame_Title)
+        });
+        this.addChild(regresar);
 
         // UI SCORE
-        this.scoreUI = new ScoreUI();
+        this.scoreUI = new ScoreUI;
         this.addChild(this.scoreUI);
-        
 
         const texty = new Text("N I V E L E S", {
             fontFamily: "Montserrat ExtraBold",
@@ -65,24 +68,39 @@ export class SongGame_LevelSelector extends Container implements IScene {
         texty.position.set(Manager.width / 2, 430);
         this.addChild(texty);
 
+        // rayos 
         this.rayo1 = Sprite.from("Rayo2");
         this.rayo1.position.set(80, 405);
+        this.rayo1.scale.x = 0.9
         this.addChild(this.rayo1);
+
+        new Tween(this.rayo1.scale)
+            .to({ x: 1.1 }, 400)
+            .start()
+            .yoyo(true)
+            .repeat(Infinity)
 
         this.rayo2 = Sprite.from("Rayo2");
         this.rayo2.position.set(640, 405);
-        this.rayo2.scale.x = -1;
+        this.rayo2.scale.x = -0.9;
         this.addChild(this.rayo2);
+
+        new Tween(this.rayo2.scale)
+            .to({ x: -1.1 }, 400)
+            .start()
+            .yoyo(true)
+            .repeat(Infinity)
 
         this.buttonHighlight = new Graphics();
         this.buttonHighlight.beginFill(0xFFFFFF);
-        this.buttonHighlight.drawRect(-55,-55,110,110);
+        this.buttonHighlight.drawRect(-55, -55, 110, 110);
+        this.buttonHighlight.alpha = 0;
 
-
-
-
-
-
+        new Tween(this.buttonHighlight)
+            .to({ alpha: 0.3 }, 400)
+            .start()
+            .repeat(Infinity)
+            .yoyo(true)
 
         // Calcular posición inicial en x para centrar el grupo de botones
         const buttonWidth = 110;
@@ -111,9 +129,7 @@ export class SongGame_LevelSelector extends Container implements IScene {
 
             if (Manager.levelsAvailable[index] && !Manager.levelsAvailable[index + 1]) {
                 button.addChild(this.buttonHighlight);
-
             }
-
 
             if (levels.isPuzzle) {
                 button.on("pointerup", () => {
@@ -161,26 +177,13 @@ export class SongGame_LevelSelector extends Container implements IScene {
 
     }
 
-    currentTime = 0; // Tiempo actual para el cálculo de la escala
 
-    update(deltaTime: number, _deltaFrame: number): void {
+    update(_deltaTime: number, _deltaFrame: number): void {
 
-        const scaleMin = 0.9; // Escala mínima del objeto
-        const scaleMax = 1.1; // Escala máxima del objeto
-        const beatDuration = 800; // Duración de un latido en milisegundos
 
-        this.currentTime += deltaTime;
-
-        const t = (this.currentTime % beatDuration) / beatDuration;
-        const scale = scaleMin + Math.abs(Math.sin(t * Math.PI)) * (scaleMax - scaleMin);
-
-        this.rayo1.scale.x = scale;
-        this.rayo2.scale.x = -scale;
-
-        this.buttonHighlight.alpha =  Math.abs(Math.sin(t * Math.PI)) * 0.3
     }
 
-    // dragging
+
 
     private onDragStart(event: any): void {
         this.dragData = event.data;

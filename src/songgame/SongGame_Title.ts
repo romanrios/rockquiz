@@ -5,10 +5,10 @@ import { SongButton } from "../UI/SongButton";
 import '@pixi/gif';
 import { sound } from '@pixi/sound';
 import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
-// import { exit } from '@tauri-apps/api/process';
-// import { appWindow } from '@tauri-apps/api/window';
+import { Tween } from "tweedle.js";
 
 export class SongGame_Title extends Container implements IScene {
+
     private titleLogo: Sprite;
     private buttonHighlight: Graphics;
 
@@ -23,7 +23,14 @@ export class SongGame_Title extends Container implements IScene {
         this.titleLogo = Sprite.from("TitleLogo");
         this.titleLogo.anchor.set(0.5);
         this.titleLogo.position.set(Manager.width / 2, 550);
+        this.titleLogo.scale.set(0.97);
         this.addChild(this.titleLogo);
+
+        new Tween(this.titleLogo.scale)
+            .to({ x: 1.03, y: 1.03 }, 400)
+            .start()
+            .yoyo(true)
+            .repeat(Infinity)
 
         const rayo1 = Assets.get("Rayo");
         rayo1.position.set(40, 700);
@@ -39,36 +46,20 @@ export class SongGame_Title extends Container implements IScene {
         button.position.set(Manager.width / 2, 1000);
         this.addChild(button);
         button.on("pointerup", () => {
-            const newScene = new SongGame_LevelSelector();
-            Manager.changeScene(newScene);
+            Manager.changeScene(new SongGame_LevelSelector);
         })
-
-
-        // const button2 = new SongButton("Pantalla completa", 500);
-        // button2.position.set(Manager.width / 2, 1075);
-        // this.addChild(button2);
-        // button2.on("pointerup", async () => {
-        //     //@ts-expect-error Tauri is injected in Tauri apps.
-        //     if (window.__TAURI__) {
-        //         const isFull = await appWindow.isFullscreen();
-        //         await appWindow.setFullscreen(!isFull);
-        //     }
-        // })
-
-        // const button3 = new SongButton("Salir del juego", 500);
-        // button3.position.set(Manager.width / 2, 1200);
-        // this.addChild(button3);
-        // button3.on("pointerup", () => {
-        //     //@ts-expect-error Tauri is injected in Tauri apps.
-        //     if (window.__TAURI__) { exit() };
-        // })
-
 
         this.buttonHighlight = new Graphics();
         this.buttonHighlight.beginFill(0xFFFFFF);
         this.buttonHighlight.drawRect(-250, -55, 500, 110);
+        this.buttonHighlight.alpha = 0;
         button.addChild(this.buttonHighlight);
 
+        new Tween(this.buttonHighlight)
+            .to({ alpha: 0.3 }, 400)
+            .start()
+            .repeat(Infinity)
+            .yoyo(true)
 
         const texty = new Text("© 2023  Román Ríos\nCreado con el apoyo de The Rabbit Hole\ny Capital Activa, Municipalidad de Santa Fe", {
             fontFamily: "Montserrat ExtraBold",
@@ -80,25 +71,9 @@ export class SongGame_Title extends Container implements IScene {
         texty.anchor.set(0.5);
         texty.position.set(Manager.width / 2, 1180);
         this.addChild(texty);
-
     }
 
-    currentTime = 0; // Tiempo actual para el cálculo de la escala
-
-    update(deltaTime: number, _deltaFrame: number): void {
-
-        const scaleMin = 0.97; // Escala mínima del objeto
-        const scaleMax = 1.03; // Escala máxima del objeto
-        const beatDuration = 800; // Duración de un latido en milisegundos
-
-        this.currentTime += deltaTime;
-
-        const t = (this.currentTime % beatDuration) / beatDuration;
-        const scale = scaleMin + Math.abs(Math.sin(t * Math.PI)) * (scaleMax - scaleMin);
-
-        this.titleLogo.scale.set(scale);
-
-        this.buttonHighlight.alpha = Math.abs(Math.sin(t * Math.PI)) * 0.3
-
+    update(_deltaTime: number, _deltaFrame: number): void {
     }
+
 }
