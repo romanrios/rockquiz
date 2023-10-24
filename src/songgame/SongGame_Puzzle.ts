@@ -59,7 +59,6 @@ export class SongGame_Puzzle extends Container implements IScene {
         // UI SCORE
         this.star = Sprite.from("Star");
         this.star.anchor.set(0.5);
-        this.star.scale.set(0.6);
         this.star.position.set(550, 75);
         this.addChild(this.star);
 

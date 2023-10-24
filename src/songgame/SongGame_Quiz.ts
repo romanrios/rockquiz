@@ -12,25 +12,20 @@ export class SongGame_Quiz extends Container implements IScene {
     private bg: Sprite;
     private counter: number;
     private counterCorrect: number;
-    private counterWrong: number;
     private texty: Text = new Text;
     private textScore: Text;
     private textHelp: Text;
     private textLevel: Text;
     private star: Sprite;
+    private nivelCompletado: Sprite = new Sprite;
+    private star1: Sprite = Sprite.from("Star");
+    private star2: Sprite = Sprite.from("Star");
+    private star3: Sprite = Sprite.from("Star");
+    private star4: Sprite = Sprite.from("Star");
+    private numeroDePregunta: number = 1;
 
     constructor(options: any, level: number) {
         super();
-        
-
-
-
-
-
-
-
-
-
 
         // Background + Text help
         this.bg = Sprite.from("QuizBackground");
@@ -53,7 +48,6 @@ export class SongGame_Quiz extends Container implements IScene {
         // UI SCORE
         this.star = Sprite.from("Star");
         this.star.anchor.set(0.5);
-        this.star.scale.set(0.6);
         this.star.position.set(550, 75);
         this.addChild(this.star);
 
@@ -65,7 +59,7 @@ export class SongGame_Quiz extends Container implements IScene {
         });
         this.textScore.anchor.set(0.5);
         this.textScore.position.set(640, 75)
-        this.addChild(this.textScore);    
+        this.addChild(this.textScore);
 
         // UI Back button
         const backButton = new SongButton("", 110);
@@ -82,7 +76,7 @@ export class SongGame_Quiz extends Container implements IScene {
 
         // UI LEVEL
         const cinta = Sprite.from("Cinta");
-        cinta.position.set(228,103);
+        cinta.position.set(228, 103);
         this.addChild(cinta);
 
         this.textLevel = new Text(`NIVEL ${levels[Manager.currentLevel].name}`, {
@@ -96,12 +90,15 @@ export class SongGame_Quiz extends Container implements IScene {
         this.addChild(this.textLevel);
 
 
+        this.star1.position.set(175, 670);
+        this.star2.position.set(285, 670);
+        this.star3.position.set(395, 670);
+        this.star4.position.set(505, 670);
 
-
-
-
-
-
+        this.star1.scale.set(1.2);
+        this.star2.scale.set(1.2);
+        this.star3.scale.set(1.2);
+        this.star4.scale.set(1.2);
 
 
 
@@ -110,7 +107,6 @@ export class SongGame_Quiz extends Container implements IScene {
         const NUMERO_OPCIONES = options; // Número total de opciones por pregunta
         this.counter = 4 - 1 // CANTIDAD DE PREGUNTAS !!
         this.counterCorrect = 0
-        this.counterWrong = 0
         const opcionesCorrectasYaElegidas: number[] = []
 
         const generarPregunta = () => {
@@ -162,7 +158,7 @@ export class SongGame_Quiz extends Container implements IScene {
             this.addChild(soundWave);
 
 
-            const answerPositions = [650, 800, 950, 1100]; // Posiciones verticales de los botones
+            const answerPositions = [655, 805, 955, 1105]; // Posiciones verticales de los botones
 
             opciones.sort(() => Math.random() - 0.5); // Reordena aleatoriamente las opciones
 
@@ -178,7 +174,7 @@ export class SongGame_Quiz extends Container implements IScene {
                     if (opcion === cancionCorrecta) {
                         this.starRotation();
                         Manager.score++;
-                        this.textScore.text=Manager.score;
+                        this.textScore.text = Manager.score;
                         this.counterCorrect += 1;
                         button.setButtonColor(0x00C18C);
                         this.eventMode = "none";
@@ -186,11 +182,22 @@ export class SongGame_Quiz extends Container implements IScene {
                     }
 
                     if (opcion !== cancionCorrecta) {
-                        this.counterWrong += 1;
                         button.setButtonColor(0xF33302);
                         this.eventMode = "none";
                         sound.play("Wrong");
+
+                        if (this.numeroDePregunta == 1) {
+                            this.star1.alpha = 0.2;
+                        } if (this.numeroDePregunta == 2) {
+                            this.star2.alpha = 0.2;
+                        } if (this.numeroDePregunta == 3) {
+                            this.star3.alpha = 0.2;
+                        } if (this.numeroDePregunta == 4) {
+                            this.star4.alpha = 0.2;
+                        }
                     }
+
+                    this.numeroDePregunta++;
 
                     // función con retardo de 1 segundo
                     setTimeout(() => {
@@ -204,7 +211,7 @@ export class SongGame_Quiz extends Container implements IScene {
                         this.eventMode = "static"
 
                         if (this.counter < 0) {
-                            Manager.levelsAvailable[Manager.currentLevel+1]=true;
+                            Manager.levelsAvailable[Manager.currentLevel + 1] = true;
                             const button1 = new SongButton("Siguiente", 500);
                             button1.setButtonColor(0x00C18C);
                             button1.position.set(Manager.width / 2, 1005)
@@ -212,41 +219,43 @@ export class SongGame_Quiz extends Container implements IScene {
                             // define cual es el puzzle del nivel siguiente
                             button1.on("pointerup", () => {
                                 Manager.changeScene(new SongGame_LevelSelector);
-                                // if (levels[Manager.currentLevel + 1].isPuzzle) {
-                                //     sound.stopAll();
-                                //     Manager.currentLevel++;
-                                //     Manager.changeScene(
-                                //         new SongGame_Puzzle(
-                                //             levels[Manager.currentLevel].song.img,
-                                //             levels[Manager.currentLevel].difficulty));
-                                //     sound.play(
-                                //         levels[Manager.currentLevel].song.audio);
-                                // }
-                                // if (!levels[Manager.currentLevel + 1].isPuzzle) {
-                                //     sound.stopAll();
-                                //     Manager.currentLevel++;
-                                //     Manager.changeScene(
-                                //         new SongGame_Quiz(
-                                //             levels[Manager.currentLevel].options,
-                                //             levels[Manager.currentLevel].difficulty));
-                                // }
                             })
 
                             this.addChild(button1);
                             this.removeChild(soundWave);
                             this.removeChild(this.textHelp);
 
+                            this.bg.alpha = 0.75;
+
+                            backButton.alpha=0.5;
+                            this.star.alpha=0.5;
+                            this.textScore.alpha=0.5;
+                            cinta.alpha=0.5;
+                            this.textLevel.alpha=0.5;
+
+                            this.nivelCompletado = Sprite.from("NivelCompletado");
+                            this.nivelCompletado.anchor.set(0.5);
+                            this.nivelCompletado.position.set(Manager.width / 2, 440);
+                            this.addChild(this.nivelCompletado);
+
+                            this.addChild(this.star1);
+                            this.addChild(this.star2);
+                            this.addChild(this.star3);
+                            this.addChild(this.star4);
+
+
                             this.texty = new Text(
-                                `NIVEL COMPLETADO\n\nRespuestas correctas: ${this.counterCorrect}\n\nRespuestas Incorrectas: ${this.counterWrong}`,
+                                `ACERTASTE ${this.counterCorrect} DE 4`,
                                 {
                                     fontFamily: "Montserrat ExtraBold",
                                     fill: 0xFFFFFF,
                                     align: "center",
-                                    fontSize: 40,
-                                    lineHeight: 39
+                                    fontSize: 28,
+                                    lineHeight: 45,
+                                    letterSpacing: 6
                                 });
                             this.texty.anchor.set(0.5);
-                            this.texty.position.set(Manager.width / 2, 700)
+                            this.texty.position.set(Manager.width / 2, 780)
                             this.addChild(this.texty);
                             sound.play("Cheer");
 
@@ -268,7 +277,7 @@ export class SongGame_Quiz extends Container implements IScene {
 
         generarPregunta();
     }
-    
+
 
 
 
@@ -289,25 +298,25 @@ export class SongGame_Quiz extends Container implements IScene {
         this.currentTime += deltaTime;
         const t = (this.currentTime % beatDuration) / beatDuration;
         const scale = scaleMin + Math.abs(Math.sin(t * Math.PI)) * (scaleMax - scaleMin);
-        this.texty.scale.set(scale);
+        this.nivelCompletado.scale.set(scale);
     }
 
 
-private starRotation(): void {
-    const targetRotation = this.star.rotation + Math.PI * 2; // Giro completo de 360 grados en radianes
-    const frames = 60; // Número de fotogramas para completar la animación
-    const increment = (targetRotation - this.star.rotation) / frames;
+    private starRotation(): void {
+        const targetRotation = this.star.rotation + Math.PI * 2; // Giro completo de 360 grados en radianes
+        const frames = 60; // Número de fotogramas para completar la animación
+        const increment = (targetRotation - this.star.rotation) / frames;
 
-    let currentFrame = 0;
-    const rotationAnimation = setInterval(() => {
-        this.star.rotation += increment;
-        currentFrame++;
+        let currentFrame = 0;
+        const rotationAnimation = setInterval(() => {
+            this.star.rotation += increment;
+            currentFrame++;
 
-        if (currentFrame >= frames) {
-            clearInterval(rotationAnimation);
-            // La animación ha finalizado, puedes realizar alguna acción adicional aquí si es necesario
-        }
-    }, 16.67); // Aproximadamente 60 fotogramas por segundo (1000 ms / 60 = 16.67)
-}
+            if (currentFrame >= frames) {
+                clearInterval(rotationAnimation);
+                // La animación ha finalizado, puedes realizar alguna acción adicional aquí si es necesario
+            }
+        }, 16.67); // Aproximadamente 60 fotogramas por segundo (1000 ms / 60 = 16.67)
+    }
 
 }

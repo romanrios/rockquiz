@@ -6,26 +6,34 @@ export const manifest: ResolverManifest = {
             name: "songGame",
             assets:
             {
-                Next: "./songgame/next.svg",
+                // FONT
                 Montserrat: "./songgame/Montserrat-ExtraBold.ttf",
-                Rayo2: "./songgame/rayo2.svg",
-                Cinta: "./songgame/cinta.png",
-                Star: "./songgame/star.svg",
-                LevelSelectorBanner: "./songgame/levelselectorbanner.png",
-                BackArrow: "./songgame/backarrow.svg",
-                Cheer: "./songgame/cheer.mp3",
-                Scratch: "./songgame/scratch.mp3",
-                Pip: "./songgame/pip.mp3",
-                Guitar: "./songgame/guitar.mp3",
+
+                // IMAGES
+                NivelCompletado: "./songgame/nivelcompletado.png",
                 Rayo: "./songgame/rayo.gif",
+                SoundWave: "./songgame/soundwave.gif",
+                Next: "./songgame/next.svg",
+                Rayo2: "./songgame/rayo2.svg",
+                BackArrow: "./songgame/backarrow.svg",
+                Cinta: "./songgame/cinta.png",
+                Star: "./songgame/star.png",
+                LevelSelectorBanner: "./songgame/levelselectorbanner.png",
                 TitleLogo: "./songgame/titlelogo.png",
                 TitleBackground: "./songgame/titlebackground.jpg",
                 QuizBackground: "./songgame/quizbackground.jpg",
                 BlackWall: "./songgame/blackwall.jpg",
                 BlackPaper: "./songgame/blackpaper.jpg",
-                SoundWave: "./songgame/soundwave.gif",
+                
+                // SOUNDS
+                Cheer: "./songgame/cheer.mp3",
+                Scratch: "./songgame/scratch.mp3",
+                Pip: "./songgame/pip.mp3",
+                Guitar: "./songgame/guitar.mp3",
                 Correct: "./songgame/correct.mp3",
                 Wrong: "./songgame/wrong.mp3",
+
+                // SONGS
                 Song0: "./songgame/song0.mp3",
                 Song1: "./songgame/song1.mp3",
                 Song2: "./songgame/song2.mp3",
@@ -67,6 +75,8 @@ export const manifest: ResolverManifest = {
                 Song38: "./songgame/song38.mp3",
                 Song39: "./songgame/song39.mp3",
                 Song40: "./songgame/song40.mp3",
+
+                // ALBUM COVERS
                 ImgSong0: "./songgame/song0.jpg",
                 ImgSong1: "./songgame/song1.jpg",
                 ImgSong2: "./songgame/song2.jpg",
