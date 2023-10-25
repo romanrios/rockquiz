@@ -6,7 +6,7 @@ import { sound } from "@pixi/sound";
 import { levels } from "./levels";
 import { SongGame_Quiz } from "./SongGame_Quiz";
 import { ScoreUI } from "../UI/ScoreUI";
-import { Tween } from "tweedle.js";
+import { Easing, Tween } from "tweedle.js";
 import { ButtonBack } from "../UI/ButtonBack";
 import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
 import { LevelTitle } from "../UI/LevelTitle";
@@ -19,7 +19,6 @@ export class SongGame_Puzzle extends Container implements IScene {
     private specialPieceIndex: number;
     private imgSong: Sprite[];
     private puzzleContainer: Container;
-
     private circleMask: Graphics;
     private imgComplete: any
     private textHelp: Text;
@@ -128,6 +127,13 @@ export class SongGame_Puzzle extends Container implements IScene {
             sprite.on("mouseover", () => { sprite.tint = 0xffdfc2 })
                 .on("mouseout", () => { sprite.tint = 0xFFFFFF })
 
+            sprite.eventMode = "none";
+            new Tween(sprite)
+                .to({ angle: sprite.angle + 90 }, 1000)
+                .easing(Easing.Bounce.Out)
+                .start()
+                .onComplete(() => { sprite.eventMode = "static" })
+
             return sprite;
         });
         // END this.imgSong = pieces.map((pieceTexture, index)
@@ -144,6 +150,8 @@ export class SongGame_Puzzle extends Container implements IScene {
         this.specialPieceIndex = Math.floor(Math.random() * this.imgSong.length);
 
         this.circleMask = new Graphics();
+        this.circleMask.scale.set(1.5);
+        this.circleMask.position.set(-150, -330);
         this.circleMask.beginFill(0xFFFFFF, 0.00001);
 
         this.circleMask.drawCircle(360, 660, 272)
@@ -161,12 +169,6 @@ export class SongGame_Puzzle extends Container implements IScene {
 
 
     update(_deltaTime: number, _deltaFrame: number): void {
-        if (this.isImageComplete) {
-            this.puzzleContainer.angle += 0.1 * _deltaTime;
-        };
-
-
-
     }
 
 
@@ -258,6 +260,17 @@ export class SongGame_Puzzle extends Container implements IScene {
         imgComplete.position.set(360, 660);
         this.puzzleContainer.addChild(imgComplete);
         this.puzzleContainer.mask = this.circleMask;
+
+        new Tween(this.circleMask)
+            .to({ scale: { x: 1, y: 1 }, position: { x: 0, y: 0 } }, 400)
+            .easing(Easing.Bounce.Out)
+            .start()
+            .onComplete(() => {
+                new Tween(this.puzzleContainer)
+                    .to({ angle: 360 }, 4000)
+                    .repeat(Infinity)
+                    .start()
+            })
     }
 
 

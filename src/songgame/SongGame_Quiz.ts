@@ -160,28 +160,28 @@ export class SongGame_Quiz extends Container implements IScene {
 
                         if (this.numeroDePregunta == 1) {
                             new Tween(this.star1)
-                                .to({ y: this.star1.y - 40 * Math.random() - 20 }, 300)
+                                .to({ y: this.star1.y - 10 }, 300 * Math.random() + 800)
                                 .start()
                                 .yoyo(true)
                                 .repeat(Infinity)
 
                         } if (this.numeroDePregunta == 2) {
                             new Tween(this.star2)
-                                .to({ y: this.star1.y - 40 * Math.random() - 20 }, 300)
+                                .to({ y: this.star1.y - 10 }, 300 * Math.random() + 800)
                                 .start()
                                 .yoyo(true)
                                 .repeat(Infinity)
 
                         } if (this.numeroDePregunta == 3) {
                             new Tween(this.star3)
-                                .to({ y: this.star1.y - 40 * Math.random() - 20 }, 300)
+                                .to({ y: this.star1.y - 10 }, 300 * Math.random() + 800)
                                 .start()
                                 .yoyo(true)
                                 .repeat(Infinity)
 
                         } if (this.numeroDePregunta == 4) {
                             new Tween(this.star4)
-                                .to({ y: this.star1.y - 40 * Math.random() - 20 }, 300)
+                                .to({ y: this.star1.y - 10 }, 300 * Math.random() + 800)
                                 .start()
                                 .yoyo(true)
                                 .repeat(Infinity)
