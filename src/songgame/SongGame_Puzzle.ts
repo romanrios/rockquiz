@@ -1,4 +1,4 @@
-import { Container, Rectangle, Sprite, Text, Graphics, Texture } from "pixi.js";
+import { Container, Rectangle, Sprite, Text, Graphics, Texture, Assets } from "pixi.js";
 import { IScene } from "../utils/IScene";
 import { Manager } from "../utils/Manager";
 import { SongButton } from "../UI/SongButton";
@@ -10,6 +10,7 @@ import { Easing, Tween } from "tweedle.js";
 import { ButtonBack } from "../UI/ButtonBack";
 import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
 import { LevelTitle } from "../UI/LevelTitle";
+import '@pixi/gif';
 
 
 export class SongGame_Puzzle extends Container implements IScene {
@@ -23,6 +24,7 @@ export class SongGame_Puzzle extends Container implements IScene {
     private imgComplete: any
     private textHelp: Text;
     private scoreUI: ScoreUI;
+    private texty: Text;
 
     constructor(img: string, difficulty: number) {
         super();
@@ -150,12 +152,23 @@ export class SongGame_Puzzle extends Container implements IScene {
         this.specialPieceIndex = Math.floor(Math.random() * this.imgSong.length);
 
         this.circleMask = new Graphics();
-        this.circleMask.scale.set(1.5);
-        this.circleMask.position.set(-150, -330);
         this.circleMask.beginFill(0xFFFFFF, 0.00001);
-
         this.circleMask.drawCircle(360, 660, 272)
         this.addChild(this.circleMask);
+
+        this.texty = new Text(
+            levels[Manager.currentLevel].song.band,
+            {
+                fontFamily: "Montserrat ExtraBold",
+                fill: 0xFFFFFF,
+                align: "center",
+                fontSize: 50,
+                lineHeight: 50,
+            });
+        this.texty.anchor.set(0.5);
+        this.texty.position.set(Manager.width / 2, 1005)
+        this.addChild(this.texty);
+
     }
 
 
@@ -184,7 +197,7 @@ export class SongGame_Puzzle extends Container implements IScene {
 
 
     private checkComplete(): void {
-        const tolerance = 1; // Rango de tolerancia en grados
+        const tolerance = 5; // Rango de tolerancia en grados
         const isComplete = this.imgSong.every(sprite => Math.abs(sprite.angle % 360) <= tolerance);
         this.isImageComplete = isComplete;
 
@@ -201,18 +214,7 @@ export class SongGame_Puzzle extends Container implements IScene {
         this.scoreUI.actualizarPuntaje();
         sound.play("Correct");
         this.disableButtons();
-        const texty: Text = new Text(
-            levels[Manager.currentLevel].song.band,
-            {
-                fontFamily: "Montserrat ExtraBold",
-                fill: 0xFFFFFF,
-                align: "center",
-                fontSize: 50,
-                lineHeight: 50,
-            });
-        texty.anchor.set(0.5);
-        texty.position.set(Manager.width / 2, 1005)
-        this.addChild(texty);
+
 
         // Crear botón que lleva al siguiente nivel y actualiza variable currentLevel
         const button1 = new SongButton("Siguiente nivel", 500);
@@ -254,25 +256,31 @@ export class SongGame_Puzzle extends Container implements IScene {
 
         // mask
 
-        this.puzzleContainer.removeChildren();
         const imgComplete = Sprite.from(this.imgComplete);
         imgComplete.anchor.set(0.5);
         imgComplete.position.set(360, 660);
+
+        this.puzzleContainer.removeChildren();
         this.puzzleContainer.addChild(imgComplete);
         this.puzzleContainer.mask = this.circleMask;
 
-        new Tween(this.circleMask)
-            .to({ scale: { x: 1, y: 1 }, position: { x: 0, y: 0 } }, 400)
-            .easing(Easing.Bounce.Out)
+        new Tween(this.puzzleContainer)
+            .to({ angle: 360 }, 4000)
+            .repeat(Infinity)
             .start()
-            .onComplete(() => {
-                new Tween(this.puzzleContainer)
-                    .to({ angle: 360 }, 4000)
-                    .repeat(Infinity)
-                    .start()
-            })
-    }
 
+
+        const rayo1 = Assets.get("Rayo");
+        rayo1.position.set(this.texty.x - this.texty.width / 2 - 100, 940);
+        rayo1.scale.set(0.8, 0.8);
+        this.addChild(rayo1);
+
+        const rayo2 = rayo1.clone();
+        rayo2.scale.set(-0.7, 0.7);
+        rayo2.position.set(this.texty.x + this.texty.width / 2 + 100, 950);
+        rayo2.angle = 10;
+        this.addChild(rayo2);
+    }
 
 
     private disableButtons(): void {

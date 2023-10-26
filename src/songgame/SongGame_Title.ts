@@ -34,6 +34,7 @@ export class SongGame_Title extends Container implements IScene {
 
         const rayo1 = Assets.get("Rayo");
         rayo1.position.set(40, 700);
+        rayo1.scale.set(1);
         this.addChild(rayo1);
 
         const rayo2 = rayo1.clone();
