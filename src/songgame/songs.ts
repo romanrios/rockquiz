@@ -156,7 +156,7 @@ export const songs = [
     },
     {
         audio: "Song31",
-        band: "Los Todopantalla",
+        band: "Las Flores Blues",
         img: "ImgSong31"
     },
     {
@@ -198,10 +198,5 @@ export const songs = [
         audio: "Song39",
         band: "La Voz del Pueblo",
         img: "ImgSong39"
-    },
-    {
-        audio: "Song40",
-        band: "Las Flores Blues",
-        img: "ImgSong40"
     }
 ];
