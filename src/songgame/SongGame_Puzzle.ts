@@ -11,6 +11,7 @@ import { ButtonBack } from "../UI/ButtonBack";
 import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
 import { LevelTitle } from "../UI/LevelTitle";
 import '@pixi/gif';
+import { ButtonPlay } from "../UI/ButtonPlay";
 
 
 export class SongGame_Puzzle extends Container implements IScene {
@@ -234,25 +235,30 @@ export class SongGame_Puzzle extends Container implements IScene {
         })
         this.addChild(button1);
 
+
         // Añadir botón de reproducción central
-        const circleGraphics = new Graphics();
-        circleGraphics.beginFill(0x000000, 0.3);
-        circleGraphics.lineStyle(4, 0xFFFFFF);
-        circleGraphics.drawCircle(0, 0, 60);
-        circleGraphics.endFill;
-        circleGraphics.position.set(Manager.width / 2, 660)
-        this.addChild(circleGraphics);
-        const playIcon = Sprite.from("Next");
-        playIcon.scale.set(0.7);
-        playIcon.anchor.set(0.5);
-        playIcon.x = 5
-        circleGraphics.addChild(playIcon)
-        circleGraphics.eventMode = "static";
-        circleGraphics.cursor = "pointer";
-        circleGraphics.on("pointerup", () => {
-            sound.stopAll(),
-                sound.play(levels[Manager.currentLevel].song.audio)
+        let isPlaying = false;
+        const buttonPlay = new ButtonPlay();
+        buttonPlay.position.set(Manager.width / 2, 660);
+        buttonPlay.eventMode = "static";
+        this.addChild(buttonPlay);
+        buttonPlay.on("pointerup", () => {
+            if (isPlaying == false) {
+                isPlaying = true;
+                sound.stopAll(),
+                sound.play(levels[Manager.currentLevel].song.audio, () => {
+                        buttonPlay.changeState();
+                        isPlaying = false;
+                    });
+                buttonPlay.changeState();
+            } else {
+                sound.stopAll();
+                buttonPlay.changeState();
+                isPlaying = false;
+            }
         });
+
+
 
         // mask
 

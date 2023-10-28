@@ -1,4 +1,4 @@
-import { Container, Graphics, Sprite } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 import { IScene } from "../utils/IScene";
 import { songs } from "../songgame/songs"
 import { SongGame_Title } from "./SongGame_Title";
@@ -8,6 +8,7 @@ import { Manager } from "../utils/Manager";
 import { LevelTitle } from "../UI/LevelTitle";
 import { Easing, Tween } from "tweedle.js";
 import { GalleryCard } from "../UI/GalleryCard";
+import { ButtonPlay } from "../UI/ButtonPlay";
 
 export class SongGame_Gallery extends Container implements IScene {
     private songCard1: any;
@@ -19,7 +20,7 @@ export class SongGame_Gallery extends Container implements IScene {
         let actualSong = 0;
 
         const background = Sprite.from("BlackPaper");
-        background.alpha=0.7;
+        background.alpha = 0.7;
         this.addChild(background);
 
 
@@ -60,6 +61,7 @@ export class SongGame_Gallery extends Container implements IScene {
                 .easing(Easing.Quintic.Out)
 
             arrow1.eventMode = "none";
+            arrow2.eventMode = "none";
 
             actualSong--;
             if (actualSong < 0) {
@@ -77,6 +79,7 @@ export class SongGame_Gallery extends Container implements IScene {
                 .onComplete(() => {
                     this.songCard1 = this.songCard2;
                     arrow1.eventMode = "static";
+                    arrow2.eventMode = "static";
                 })
         })
 
@@ -96,6 +99,7 @@ export class SongGame_Gallery extends Container implements IScene {
                 .start()
                 .easing(Easing.Quintic.Out)
 
+            arrow1.eventMode = "none";
             arrow2.eventMode = "none";
             actualSong++;
             if (actualSong > 39) {
@@ -111,6 +115,7 @@ export class SongGame_Gallery extends Container implements IScene {
                 .easing(Easing.Quintic.Out)
                 .onComplete(() => {
                     this.songCard1 = this.songCard2;
+                    arrow1.eventMode = "static";
                     arrow2.eventMode = "static";
                 })
         })
@@ -132,30 +137,27 @@ export class SongGame_Gallery extends Container implements IScene {
             .yoyo(true)
 
 
-
-
         // Añadir botón de reproducción central
-        const circleGraphics = new Graphics();
-        circleGraphics.beginFill(0x000000, 0.3);
-        circleGraphics.lineStyle(4, 0xFFFFFF);
-        circleGraphics.drawCircle(0, 0, 60);
-        circleGraphics.endFill;
-        circleGraphics.position.set(Manager.width / 2, 1150)
-        this.addChild(circleGraphics);
-        const playIcon = Sprite.from("Next");
-        playIcon.scale.set(0.7);
-        playIcon.anchor.set(0.5);
-        playIcon.x = 5
-        circleGraphics.addChild(playIcon)
-        circleGraphics.eventMode = "static";
-        circleGraphics.cursor = "pointer";
-        circleGraphics.on("pointerup", () => {
-            sound.stopAll(),
-                sound.play(songs[actualSong].audio);
+        let isPlaying = false;
+        const buttonPlay = new ButtonPlay();
+        buttonPlay.position.set(Manager.width / 2, 1150);
+        buttonPlay.eventMode = "static";
+        this.addChild(buttonPlay);
+        buttonPlay.on("pointerup", () => {
+            if (isPlaying == false) {
+                isPlaying = true;
+                sound.stopAll(),
+                    sound.play(songs[actualSong].audio, () => {
+                        buttonPlay.changeState();
+                        isPlaying = false;
+                    });
+                buttonPlay.changeState();
+            } else {
+                sound.stopAll();
+                buttonPlay.changeState();
+                isPlaying = false;
+            }
         });
-
-
-
 
     }
 
@@ -163,6 +165,5 @@ export class SongGame_Gallery extends Container implements IScene {
     update(_deltaTime: number, _deltaFrame: number): void {
         // throw new Error("Method not implemented.");
     }
-
 
 }
