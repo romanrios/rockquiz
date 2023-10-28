@@ -229,7 +229,7 @@ export class SongGame_Puzzle extends Container implements IScene {
             } else {
                 sound.stopAll();
                 Manager.currentLevel++;
-                Manager.changeScene(new SongGame_Quiz(levels[Manager.currentLevel].options, levels[Manager.currentLevel].difficulty));
+                Manager.changeScene(new SongGame_Quiz(levels[Manager.currentLevel].options, levels[Manager.currentLevel].difficulty, false));
             }
         })
         this.addChild(button1);

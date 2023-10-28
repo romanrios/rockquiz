@@ -25,6 +25,12 @@ export class ScoreUI extends Container {
         this.star.anchor.set(0.5);
         this.star.position.set(this.textScore.x - (this.textScore.width / 2) - 50, 75);
         this.addChild(this.star);
+
+        new Tween(this.star)
+            .to({ y: this.star.y - 10 }, 1000)
+            .start()
+            .yoyo(true)
+            .repeat(Infinity)
     }
 
     actualizarPuntaje() {

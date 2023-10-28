@@ -3,8 +3,10 @@ import { IScene } from "./IScene";
 import { Group } from "tweedle.js";
 
 export class Manager {
+    static muted: boolean = false;
 
     private constructor() { /*this class is purely static. No constructor to see here*/ }
+
 
 
     // Safely store variables for our game

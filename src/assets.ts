@@ -25,7 +25,10 @@ export const manifest: ResolverManifest = {
                 QuizBackground: "./images/quizbackground.jpg",
                 BlackWall: "./images/blackwall.jpg",
                 BlackPaper: "./images/blackpaper.jpg",
-                
+                Muted: "./images/muted.png",
+                Unmuted: "./images/unmuted.png",
+                Fullscreen: "./images/fullscreen.png",
+                Arrow: "./images/arrow.png",
                 // SOUNDS
                 Cheer: "./sounds/cheer.mp3",
                 Pip: "./sounds/pip.mp3",

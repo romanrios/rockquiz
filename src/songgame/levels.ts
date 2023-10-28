@@ -1,5 +1,7 @@
 import { songs } from "./songs";
 
+export let muted = false;
+
 export const levels = [
     {
         isPuzzle: true,
@@ -266,13 +268,13 @@ export const levels = [
     {
         isPuzzle: true,
         song: songs[33],
-        difficulty: 3,
+        difficulty: 2,
         name: "9.2"
     },
     {
         isPuzzle: true,
         song: songs[34],
-        difficulty: 3,
+        difficulty: 2,
         name: "9.3"
     },
     {

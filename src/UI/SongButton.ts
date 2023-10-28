@@ -30,8 +30,8 @@ export class SongButton extends Container {
         this.eventMode = 'static';
         this.cursor = 'pointer';
 
-        this.on("mouseover", () => { this.scale.set(this.scale.x * 1.07) })
-            .on("mouseout", () => { this.scale.set(this.scale.x / 1.07)});
+        this.on("mouseover", () => { this.scale.set(this.scale.x * 1.04) })
+            .on("mouseout", () => { this.scale.set(this.scale.x / 1.04) });
 
     }
 
@@ -40,6 +40,15 @@ export class SongButton extends Container {
         this.rectangle.lineStyle(4, 0xFFFFFF);
         this.rectangle.beginFill(color, 1);
         this.rectangle.drawRect(0, 0, 500, 110);
+        this.rectangle.pivot.x = this.rectangle.width / 2;
+        this.rectangle.pivot.y = this.rectangle.height / 2;
+    }
+
+    public setButtonColor2(color: number, alpha: number) {
+        this.rectangle.clear();
+        this.rectangle.lineStyle(4, 0xFFFFFF);
+        this.rectangle.beginFill(color, alpha);
+        this.rectangle.drawRect(0, 0, 110, 110);
         this.rectangle.pivot.x = this.rectangle.width / 2;
         this.rectangle.pivot.y = this.rectangle.height / 2;
     }

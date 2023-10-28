@@ -9,7 +9,7 @@ import { SongGame_Quiz } from "./SongGame_Quiz";
 import { ScoreUI } from "../UI/ScoreUI";
 import { ButtonBack } from "../UI/ButtonBack";
 import { SongGame_Title } from "./SongGame_Title";
-import { Tween, Easing} from "tweedle.js"
+import { Tween, Easing } from "tweedle.js"
 
 export class SongGame_LevelSelector extends Container implements IScene {
 
@@ -25,12 +25,12 @@ export class SongGame_LevelSelector extends Container implements IScene {
     constructor() {
         super();
 
-        this.y=-1200;
+        this.y = -1200;
 
         new Tween(this)
-          .to({y:0},600)
-          .start()
-          .easing(Easing.Quintic.Out)
+            .to({ y: 0 }, 600)
+            .start()
+            .easing(Easing.Quintic.Out)
 
 
         // Fondo y botón Regresar
@@ -149,7 +149,7 @@ export class SongGame_LevelSelector extends Container implements IScene {
                     if (this.isDragging) {
                         sound.stopAll();
                         Manager.currentLevel = index;
-                        Manager.changeScene(new SongGame_Quiz(levels.options, levels.difficulty));
+                        Manager.changeScene(new SongGame_Quiz(levels.options, levels.difficulty, false));
                     }
                 });
                 this.buttons.push(button);

@@ -8,11 +8,13 @@ import { songs } from "./songs";
 import { SongGame_LevelSelector } from "./SongGame_LevelSelector";
 import { ScoreUI } from "../UI/ScoreUI";
 import { ButtonBack } from "../UI/ButtonBack";
-import { Tween } from "tweedle.js";
+import { Easing, Tween } from "tweedle.js";
 import { LevelTitle } from "../UI/LevelTitle";
 import { SongGame_Finish } from "./SongGame_Finish";
+import { SongGame_Title } from "./SongGame_Title";
 
 export class SongGame_Quiz extends Container implements IScene {
+
     private bg: Sprite;
     private counter: number;
     private counterCorrect: number;
@@ -27,7 +29,7 @@ export class SongGame_Quiz extends Container implements IScene {
     private scoreUI: ScoreUI;
     regresar: ButtonBack;
 
-    constructor(options: any, level: number) {
+    constructor(options: any, level: number, isUltimateQuiz: boolean) {
         super();
 
         // Background + Text help
@@ -61,14 +63,29 @@ export class SongGame_Quiz extends Container implements IScene {
         // UI Back button
         this.regresar = new ButtonBack;
         this.regresar.on("pointerup", () => {
-            sound.stopAll();
-            Manager.changeScene(new SongGame_LevelSelector())
+            if (isUltimateQuiz) {
+                sound.stopAll();
+                Manager.changeScene(new SongGame_Title())
+            } else {
+                sound.stopAll();
+                Manager.changeScene(new SongGame_LevelSelector())
+            }
         });
         this.addChild(this.regresar);
 
-        // UI LEVEL        
+        // UI LEVEL      
+
+
         const levelTitle = new LevelTitle();
         this.addChild(levelTitle);
+        if (isUltimateQuiz) {
+            levelTitle.textLevel.text = "QUIZ\nDEFINITIVO";
+            levelTitle.textLevel.style.lineHeight = 30;
+            levelTitle.cinta.height += 20;
+            levelTitle.cinta.y -= 10;
+        }
+
+
 
         this.star1.position.set(175, 670);
         this.star2.position.set(285, 670);
@@ -114,7 +131,7 @@ export class SongGame_Quiz extends Container implements IScene {
 
             // GIF DE ONDAS
             const soundWave = Assets.get('SoundWave');
-            sound.play(cancionCorrecta.audio);
+            sound.play(cancionCorrecta.audio, () => { soundWave.alpha = 0.3; isPlaying = false; });
             soundWave.alpha = 0.8;
             soundWave.anchor.set(0.5);
             soundWave.position.set(Manager.width / 2, 388)
@@ -128,7 +145,7 @@ export class SongGame_Quiz extends Container implements IScene {
                     isPlaying = false;
                 } else {
                     soundWave.alpha = 0.8;
-                    sound.play(cancionCorrecta.audio)
+                    sound.play(cancionCorrecta.audio, () => { soundWave.alpha = 0.3; isPlaying = false; });
                     isPlaying = true;
                 }
             }
@@ -143,8 +160,23 @@ export class SongGame_Quiz extends Container implements IScene {
             this.addChild(buttonsContainer);
 
             opciones.forEach((opcion, i) => {
+
+                function randomNumber() {
+                    const aleatorio = Math.random();
+                    if (aleatorio < 0.5) {
+                        return 1000;
+                    } else {
+                        return -300;
+                    }
+                }
+
                 const button: SongButton = new SongButton(opcion.band, 500);
-                button.position.set(Manager.width / 2, answerPositions[i]);
+                button.position.set(randomNumber(), answerPositions[i]);
+
+                new Tween(button)
+                    .to({ x: Manager.width / 2 }, 500)
+                    .start()
+                    .easing(Easing.Quintic.In)
 
                 button.onpointerup = () => {
 
@@ -219,15 +251,26 @@ export class SongGame_Quiz extends Container implements IScene {
                         this.eventMode = "static"
 
                         if (this.counter < 0) {
-                            Manager.levelsAvailable[Manager.currentLevel + 1] = true;
-                            const button1 = new SongButton("Siguiente", 500);
+
+                            let buttonText = "Siguiente";
+                            if (!isUltimateQuiz) {
+                                Manager.levelsAvailable[Manager.currentLevel + 1] = true;
+                            } else {
+                                buttonText = "Jugar de nuevo"
+                            }
+
+
+                            const button1 = new SongButton(buttonText, 500);
                             button1.setButtonColor(0x00C18C);
                             button1.position.set(Manager.width / 2, 1005)
 
                             // define cual es el puzzle del nivel siguiente
 
                             button1.on("pointerup", () => {
-                                if (Manager.currentLevel == 49) {
+                                if (isUltimateQuiz) {
+                                    sound.stopAll();
+                                    Manager.changeScene(new SongGame_Quiz(4, 40, true));
+                                } else if (Manager.currentLevel == 49) {
                                     Manager.changeScene(new SongGame_Finish);
                                 } else {
                                     Manager.changeScene(new SongGame_LevelSelector);
@@ -240,8 +283,13 @@ export class SongGame_Quiz extends Container implements IScene {
 
                             this.nivelCompletado = Sprite.from("NivelCompletado");
                             this.nivelCompletado.anchor.set(0.5);
-                            this.nivelCompletado.position.set(Manager.width / 2, 440);
+                            this.nivelCompletado.position.set(Manager.width / 2, -150);
                             this.addChild(this.nivelCompletado);
+
+                            new Tween(this.nivelCompletado)
+                                .to({ y: 440 }, 500)
+                                .start()
+                                .easing(Easing.Bounce.Out)
 
                             new Tween(this.nivelCompletado.scale)
                                 .to({ x: 1.03, y: 1.03 }, 400)
