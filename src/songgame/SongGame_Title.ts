@@ -59,7 +59,7 @@ export class SongGame_Title extends Container implements IScene {
         button.position.set(Manager.width / 2, 1000);
         this.addChild(button);
         button.on("pointerup", () => {
-
+            button.eventMode = "none";
             logoAnimation.stop();
 
             new Tween(this.titleLogo)
@@ -86,7 +86,6 @@ export class SongGame_Title extends Container implements IScene {
                 .to({ alpha: 0 }, 500)
                 .start()
                 .easing(Easing.Quintic.In)
-                .onComplete(() => this.removeChild(button))
 
             // UI Back button
             const regresar = new ButtonBack;

@@ -134,7 +134,7 @@ export const levels = [
     {
         isPuzzle: true,
         song: songs[16],
-        difficulty: 3,
+        difficulty: 2,
         name: "5.1"
     },
     {
@@ -248,7 +248,7 @@ export const levels = [
     {
         isPuzzle: true,
         song: songs[31],
-        difficulty: 2,
+        difficulty: 3,
         name: "8.4"
     },
     {
@@ -294,7 +294,7 @@ export const levels = [
     {
         isPuzzle: true,
         song: songs[36],
-        difficulty: 3,
+        difficulty: 2,
         name: "10.1"
     },
     {

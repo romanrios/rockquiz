@@ -63,7 +63,7 @@ export const songs = [
         audio: "Song10",
         band: "Levitar",
         img: "ImgSong10",
-        songName: "SENTIDO AL COMO"
+        songName: "SENTIDO AL CÓMO"
     },
     {
         audio: "Song11",
@@ -73,9 +73,9 @@ export const songs = [
     },
     {
         audio: "Song12",
-        band: "Nitroplan",
+        band: "Enigmatica",
         img: "ImgSong12",
-        songName: "BESTIAS"
+        songName: "QUIEBRE"
     },
     {
         audio: "Song13",
@@ -97,9 +97,9 @@ export const songs = [
     },
     {
         audio: "Song16",
-        band: "Mo' Blues",
+        band: "Nada más y\nnada menos",
         img: "ImgSong16",
-        songName: "QUEBRADO Y HAMBRIENTO"
+        songName: "PARA SER LA VOZ"
     },
     {
         audio: "Song17",
@@ -181,15 +181,15 @@ export const songs = [
     },
     {
         audio: "Song30",
-        band: "Coda",
+        band: "Mo' Blues",
         img: "ImgSong30",
-        songName: "INEVITABLE DESTINO"
+        songName: "QUEBRADO Y HAMBRIENTO"
     },
     {
         audio: "Song31",
-        band: "Las Flores Blues",
+        band: "Masto",
         img: "ImgSong31",
-        songName: "CALEIDOSCOPIO"
+        songName: "DESCONEXIÓN"
     },
     {
         audio: "Song32",
@@ -211,15 +211,15 @@ export const songs = [
     },
     {
         audio: "Song35",
-        band: "Enigmatica",
+        band: "Nitroplan",
         img: "ImgSong35",
-        songName: "NUEVO"
+        songName: "BESTIAS"
     },
     {
         audio: "Song36",
-        band: "Sr Brass",
+        band: "Las Flores Blues",
         img: "ImgSong36",
-        songName: "NO LO HAREMOS"
+        songName: "CALEIDOSCOPIO"
     },
     {
         audio: "Song37",
@@ -229,9 +229,9 @@ export const songs = [
     },
     {
         audio: "Song38",
-        band: "Toponauta",
+        band: "Destinesia",
         img: "ImgSong38",
-        songName: "EN UN LUGAR"
+        songName: "VISCERAL"
     },
     {
         audio: "Song39",
