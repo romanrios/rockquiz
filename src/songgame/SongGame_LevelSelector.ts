@@ -195,12 +195,12 @@ export class SongGame_LevelSelector extends Container implements IScene {
             this.y += deltaY;
             this.dragStartY = newY;
 
-            this.isDragging = true;
+            setTimeout(() => { this.isDragging = true }, 10)
 
             if (this.y > 0) {
                 this.y = 0;
             }
-    
+
             if (this.y < -700) {
                 this.y = -700;
             }
