@@ -14,7 +14,7 @@ import { Tween, Easing } from "tweedle.js"
 export class SongGame_LevelSelector extends Container implements IScene {
 
     private buttons: SongButton[];
-    private dragData: any | null;
+    private dragData: any | null = null;
     private dragStartY: number;
     private isDragging: boolean = false;
     private rayo2: Sprite;
@@ -131,9 +131,10 @@ export class SongGame_LevelSelector extends Container implements IScene {
                 button.addChild(this.buttonHighlight);
             }
 
+
             if (levels.isPuzzle) {
                 button.on("pointerup", () => {
-                    if (this.isDragging) {
+                    if (!this.isDragging) {
                         sound.stopAll();
                         Manager.currentLevel = index;
                         Manager.changeScene(new SongGame_Puzzle(levels.song.img, levels.difficulty));
@@ -146,7 +147,7 @@ export class SongGame_LevelSelector extends Container implements IScene {
             if (!levels.isPuzzle) {
                 button.rectangle.tint = 0xF33302;
                 button.on("pointerup", () => {
-                    if (this.isDragging) {
+                    if (!this.isDragging) {
                         sound.stopAll();
                         Manager.currentLevel = index;
                         Manager.changeScene(new SongGame_Quiz(levels.options, levels.difficulty, false));
@@ -165,7 +166,6 @@ export class SongGame_LevelSelector extends Container implements IScene {
 
         // dragging
         this.eventMode = "static";
-        this.dragData = null;
         this.dragStartY = 0;
 
         this.on("pointerdown", this.onDragStart)
@@ -179,16 +179,12 @@ export class SongGame_LevelSelector extends Container implements IScene {
 
 
     update(_deltaTime: number, _deltaFrame: number): void {
-
-
     }
-
 
 
     private onDragStart(event: any): void {
         this.dragData = event.data;
         this.dragStartY = this.dragData.global.y;
-        this.isDragging = true;
     }
 
     private onDragMove(): void {
@@ -198,18 +194,17 @@ export class SongGame_LevelSelector extends Container implements IScene {
 
             this.y += deltaY;
             this.dragStartY = newY;
+
+            this.isDragging = true;
+
+            if (this.y > 0) {
+                this.y = 0;
+            }
+    
+            if (this.y < -700) {
+                this.y = -700;
+            }
         }
-
-        if (this.y > 0) {
-            this.y = 0;
-        }
-
-        if (this.y < -700) {
-            this.y = -700;
-        }
-
-        this.isDragging = false;
-
 
     }
 
