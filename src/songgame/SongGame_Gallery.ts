@@ -77,6 +77,7 @@ export class SongGame_Gallery extends Container implements IScene {
                 .start()
                 .easing(Easing.Quintic.Out)
                 .onComplete(() => {
+                    this.songCard1.destroy()
                     this.songCard1 = this.songCard2;
                     arrow1.eventMode = "static";
                     arrow2.eventMode = "static";
@@ -114,6 +115,7 @@ export class SongGame_Gallery extends Container implements IScene {
                 .start()
                 .easing(Easing.Quintic.Out)
                 .onComplete(() => {
+                    this.songCard1.destroy()
                     this.songCard1 = this.songCard2;
                     arrow1.eventMode = "static";
                     arrow2.eventMode = "static";
