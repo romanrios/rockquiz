@@ -2,17 +2,57 @@
 
 ![00](https://github.com/romanrios/rockquiz/assets/122373737/5f3aad5d-6e2f-4b87-8201-8fceeac258e8)
 
-Videojuego web para dispositivos móviles sobre bandas de rock de la ciudad de Santa Fe, que combina música, puzzle y quiz.
+| Description                                                                                                     |
+|-----------------------------------------------------------------------------------------------------------------|
+| **English:** Mobile web game about the rock bands of the city of Santa Fe (Argentina), combining music, puzzles, and quizzes (trivia). Project carried out during the Pixi.JS Game Development course, provided by The Rabbit Hole, with support from Capital Activa and the Municipality of Santa Fe. |
+| **Español:** Videojuego web para dispositivos móviles sobre las bandas de rock de la ciudad de Santa Fe (Argentina), que combina música, puzzle y quiz (trivia). Proyecto realizado durante el curso de Desarrollo de Videojuegos con Pixi.JS, impartido por The Rabbit Hole, con el apoyo de Capital Activa y la Municipalidad de Santa Fe. |
 
-Diseño, desarrollo y música de la pantalla de título: Román Ríos.
+| Credits                                                                                                         |
+|-----------------------------------------------------------------------------------------------------------------|
+| Design, programming, and title screen music by Román Ríos. All other songs and album covers belong to their respective bands. |
 
-## Información del Proyecto
-Proyecto del curso de Desarrollo de Videojuegos en Pixi.JS, impartido por The Rabbit Hole, con el apoyo de Capital Activa y la Municipalidad de Santa Fe.
 
-## Demo jugable
-https://romanrios.github.io/rockquiz/
+## Technologies
+<table>
+  <tr>
+    <td align="center" valign="middle">
+      <img src="https://github.com/romanrios/pinomolino/assets/122373737/6652bb5b-0a0e-4868-b856-ea01f25c86ab" alt="pixi" width="120px">
+    </td> 
+    <td align="center" valign="middle">
+      <img src="https://github.com/romanrios/pinomolino/assets/122373737/b74998ff-e9ca-450c-8b24-ac522aeaa5ff" alt="typescript" width="80px">
+    </td>
+    <td align="center" valign="middle">
+      <img src="https://github.com/romanrios/pinomolino/assets/122373737/f8a91e7d-8404-4ec5-92ae-43e5fd7822ce" alt="node" width="100px">
+    </td>
+    <td align="center" valign="middle">
+      <img src="https://github.com/romanrios/pinomolino/assets/122373737/f43f2068-1167-4378-895e-cf7e8226057b" alt="webpack" width="70px">
+    </td>   
+    </tr>
+    <tr>
+      <td align="center"> 
+        PixiJS
+      </td>
+      <td align="center"> 
+        TypeScript
+      </td>
+      <td align="center">        
+        Node.js
+      </td>
+      <td align="center">     
+        Webpack
+      </td>
+    </tr>  
+  </table> 
 
-## Imágenes
+
+## Demo 
+
+🕹️ [GitHub Pages](https://romanrios.github.io/rockquiz/)
+
+🕹️ [Itch.io](https://romanrios.itch.io/rockquiz)
+
+
+## Screenshots
 
 ![01](https://github.com/romanrios/rockquiz/assets/122373737/4c668826-b099-45a6-b4c3-a13d21e97e5f)
 
@@ -33,10 +73,11 @@ https://romanrios.github.io/rockquiz/
 ![11](https://github.com/romanrios/rockquiz/assets/122373737/26b9f221-74ce-4686-ab81-da2cc8be49cc)
 
 
-## Link a otra propuesta
+## Pino en el Molino
 https://github.com/romanrios/pinomolino
 
-## Presentación PDF
+
+## PDF presentation
 [Presentación PIXI JS.pdf](https://github.com/romanrios/rockquiz/files/13207037/Presentacion.PIXI.JS.pdf)
 
 
