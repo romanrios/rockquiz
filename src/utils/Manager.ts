@@ -7,11 +7,11 @@ export class Manager {
 
     private constructor() { /*this class is purely static. No constructor to see here*/ }
 
-
-
     // Safely store variables for our game
     private static app: Application;
     private static currentScene: IScene;
+
+    private static readonly SAVE_KEY = "quiz_game_save_data";
 
     // QUIZGAME Current level & score variable getter and setter
     private static _currentLevel: number = 0;
@@ -27,12 +27,12 @@ export class Manager {
         Manager._currentLevel = value;
     }
 
-
     public static get score(): number {
         return Manager._score;
     }
     public static set score(value: number) {
         Manager._score = value;
+        Manager.saveToLocalStorage();
     }
 
     public static get levelsAvailable(): boolean[] {
@@ -42,6 +42,102 @@ export class Manager {
         Manager._levelsAvailable = value;
     }
 
+    public static unlockLevel(index: number): void {
+        if (index < 0) {
+            return;
+        }
+        // Ensure the levels array has the expected length
+        if (Manager._levelsAvailable.length < 51) {
+            const filled = new Array<boolean>(51).fill(false);
+            for (let i = 0; i < Manager._levelsAvailable.length && i < 51; i++) {
+                filled[i] = !!Manager._levelsAvailable[i];
+            }
+            Manager._levelsAvailable = filled;
+        }
+
+        if (index >= Manager._levelsAvailable.length) {
+            return;
+        }
+
+        if (!Manager._levelsAvailable[index]) {
+            Manager._levelsAvailable[index] = true;
+            Manager.saveToLocalStorage();
+        }
+    }
+
+    public static resetProgress(): void {
+        // Reset in-memory progress
+        Manager._score = 0;
+        Manager._levelsAvailable = new Array(51).fill(false);
+        Manager._levelsAvailable[0] = true;
+
+        // Clear saved data without affecting other localStorage entries
+        try {
+            if (typeof window !== "undefined" && window.localStorage) {
+                window.localStorage.removeItem(Manager.SAVE_KEY);
+            }
+        } catch {
+            // Ignore storage errors so the game never crashes because of them
+        }
+    }
+
+    private static saveToLocalStorage(): void {
+        try {
+            if (typeof window === "undefined" || !window.localStorage) {
+                return;
+            }
+
+            const data = {
+                score: Manager._score,
+                levelsAvailable: Manager._levelsAvailable,
+            };
+
+            window.localStorage.setItem(Manager.SAVE_KEY, JSON.stringify(data));
+        } catch {
+            // Ignore storage errors so the game never crashes because of them
+        }
+    }
+
+    private static loadFromLocalStorageOrDefaults(): void {
+        // Default progress: 51 levels, only level 0 unlocked, score 0
+        Manager._score = 0;
+        Manager._levelsAvailable = new Array(51).fill(false);
+        Manager._levelsAvailable[0] = true;
+
+        try {
+            if (typeof window === "undefined" || !window.localStorage) {
+                return;
+            }
+
+            const raw = window.localStorage.getItem(Manager.SAVE_KEY);
+            if (!raw) {
+                // No existing save; persist defaults
+                Manager.saveToLocalStorage();
+                return;
+            }
+
+            const parsed = JSON.parse(raw);
+
+            const loadedScore =
+                parsed && typeof parsed.score === "number" ? parsed.score : 0;
+
+            const loadedLevelsRaw = parsed && parsed.levelsAvailable;
+            const loadedLevels: boolean[] | null = Array.isArray(loadedLevelsRaw)
+                ? loadedLevelsRaw.map((v: unknown) => !!v)
+                : null;
+
+            if (!loadedLevels || loadedLevels.length !== 51) {
+                // Corrupted or unexpected data; keep defaults and overwrite bad save
+                Manager.saveToLocalStorage();
+                return;
+            }
+
+            Manager._score = loadedScore;
+            Manager._levelsAvailable = loadedLevels;
+        } catch {
+            // Any error (including JSON.parse) falls back to defaults
+        }
+    }
 
     // Width and Height are read-only after creation (for now)
     private static _width: number;
@@ -58,11 +154,8 @@ export class Manager {
     // Use this function ONCE to start the entire machinery
     public static initialize(width: number, height: number, background: number): void {
 
-        // levelsCompleted 51 niveles false
-        for (let i = 0; i < 51; i++) {
-            Manager._levelsAvailable[i] = false;
-        }
-        Manager._levelsAvailable[0] = true;
+        // Load saved progress (or defaults if none / corrupted)
+        Manager.loadFromLocalStorageOrDefaults();
 
         // store our width and height
         Manager._width = width;

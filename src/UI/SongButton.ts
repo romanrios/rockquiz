@@ -3,11 +3,14 @@ import { Container, Graphics, Text, TextStyle } from "pixi.js";
 export class SongButton extends Container {
 
     /*private*/ rectangle: Graphics;
+    private buttonWidth: number;
+    private label: Text;
 
     constructor(band: string, myWidth: number) {
         super();
 
         this.rectangle = new Graphics();
+        this.buttonWidth = myWidth;
         this.rectangle.lineStyle(4, 0xFFFFFF);
         this.rectangle.beginFill(0xFFFFFF, 0.00000001)
         this.rectangle.drawRect(0, 0, myWidth, 110);
@@ -24,7 +27,8 @@ export class SongButton extends Container {
         });
         const texty: Text = new Text(band, styly);
         texty.anchor.set(0.5);
-        texty.y = -3
+        texty.y = -3;
+        this.label = texty;
         this.addChild(texty);
 
         this.eventMode = 'static';
@@ -39,7 +43,7 @@ export class SongButton extends Container {
         this.rectangle.clear();
         this.rectangle.lineStyle(4, 0xFFFFFF);
         this.rectangle.beginFill(color, 1);
-        this.rectangle.drawRect(0, 0, 500, 110);
+        this.rectangle.drawRect(0, 0, this.buttonWidth, 110);
         this.rectangle.pivot.x = this.rectangle.width / 2;
         this.rectangle.pivot.y = this.rectangle.height / 2;
     }
@@ -48,9 +52,13 @@ export class SongButton extends Container {
         this.rectangle.clear();
         this.rectangle.lineStyle(4, 0xFFFFFF);
         this.rectangle.beginFill(color, alpha);
-        this.rectangle.drawRect(0, 0, 110, 110);
+        this.rectangle.drawRect(0, 0, this.buttonWidth, 110);
         this.rectangle.pivot.x = this.rectangle.width / 2;
         this.rectangle.pivot.y = this.rectangle.height / 2;
+    }
+
+    public setLabelOffsetY(y: number) {
+        this.label.y = y;
     }
 
 

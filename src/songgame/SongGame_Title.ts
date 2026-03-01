@@ -101,41 +101,56 @@ export class SongGame_Title extends Container implements IScene {
                 .start()
                 .easing(Easing.Quintic.In)
 
-            const button1 = new SongButton("Juego Principal", 500);
-            button1.position.set(-300, 550);
-            button1.on("pointerup", () => Manager.changeScene(new SongGame_LevelSelector))
-            button1.addChild(this.buttonHighlight);
-            this.addChild(button1);
+            const menuButtonsConfig = [
+                {
+                    label: "Juego Principal",
+                    index: 0,
+                    fromLeft: true,
+                    onClick: () => {
+                        Manager.changeScene(new SongGame_LevelSelector());
+                    }
+                },
+                {
+                    label: "Quiz Definitivo",
+                    index: 1,
+                    fromLeft: false,
+                    onClick: () => {
+                        sound.stopAll();
+                        Manager.changeScene(new SongGame_Quiz(4, 40, true));
+                    }
+                },
+                {
+                    label: "Galería de Bandas",
+                    index: 2,
+                    fromLeft: true,
+                    onClick: () => {
+                        Manager.changeScene(new SongGame_Gallery());
+                    }
+                }
+            ];
 
-            new Tween(button1)
-                .to({ x: Manager.width / 2 }, 500)
-                .start()
-                .easing(Easing.Quintic.In)
+            const menuBaseY = 550;
+            const menuSpacingY = 150;
+            const menuTargetX = Manager.width / 2;
 
-            const button2 = new SongButton("Quiz Definitivo", 500);
-            button2.position.set(1020, 700);
-            button2.on("pointerup", () => {
-                sound.stopAll();
-                Manager.changeScene(new SongGame_Quiz(4, 40, true));
-            })
-            this.addChild(button2);
+            menuButtonsConfig.forEach((cfg) => {
+                const buttonMenu = new SongButton(cfg.label, 500);
+                const startX = cfg.fromLeft ? -300 : Manager.width + 300;
+                const y = menuBaseY + cfg.index * menuSpacingY;
 
-            new Tween(button2)
-                .to({ x: Manager.width / 2 }, 500)
-                .start()
-                .easing(Easing.Quintic.In)
+                buttonMenu.position.set(startX, y);
+                buttonMenu.on("pointerup", cfg.onClick);
+                this.addChild(buttonMenu);
 
-            const button3 = new SongButton("Galería de Bandas", 500);
-            button3.position.set(-300, 850);
-            this.addChild(button3);
-            button3.on("pointerup", () => {
-                Manager.changeScene(new SongGame_Gallery);
-            })
+                if (cfg.index === 0) {
+                    buttonMenu.addChild(this.buttonHighlight);
+                }
 
-            new Tween(button3)
-                .to({ x: Manager.width / 2 }, 500)
-                .start()
-                .easing(Easing.Quintic.In)
+                new Tween(buttonMenu)
+                    .to({ x: menuTargetX }, 500)
+                    .start()
+                    .easing(Easing.Quintic.In);
+            });
 
 
             const iconUnmuted = Sprite.from("./images/unmuted.png");
@@ -145,7 +160,8 @@ export class SongGame_Title extends Container implements IScene {
             iconMuted.position.set(-30, -26);
 
             const buttonMute = new SongButton("", 110);
-            buttonMute.position.set(855, 1010);
+            const utilityButtonsY = 1010;
+            buttonMute.position.set(Manager.width + 300, utilityButtonsY);
             buttonMute.addChild(buttonMute);
 
             if (!Manager.muted) {
@@ -177,7 +193,7 @@ export class SongGame_Title extends Container implements IScene {
             })
 
             const buttonFullscreen = new SongButton("", 110);
-            buttonFullscreen.position.set(1130, 1010)
+            buttonFullscreen.position.set(Manager.width + 300, utilityButtonsY);
             buttonFullscreen.addChild(buttonFullscreen);
             buttonFullscreen.alpha = 0.7;
             const iconFullscreen = Sprite.from("./images/fullscreen.png");
@@ -198,14 +214,111 @@ export class SongGame_Title extends Container implements IScene {
                 }
             })
 
+            const openResetModal = () => {
+                const overlay = new Container();
+                overlay.eventMode = "static";
+
+                const dimBackground = new Graphics();
+                dimBackground.beginFill(0x000000, 0.95);
+                dimBackground.drawRect(0, 0, Manager.width, Manager.height);
+                dimBackground.endFill();
+                dimBackground.alpha = 0;
+                overlay.addChild(dimBackground);
+
+                const centerX = Manager.width / 2;
+                const centerY = Manager.height / 2;
+
+                const dialogContainer = new Container();
+                dialogContainer.position.set(centerX, centerY);
+                dialogContainer.scale.set(0.4);
+                overlay.addChild(dialogContainer);
+
+                // const panel = new Graphics();
+                // panel.beginFill(0x000000, 0.9);
+                // panel.drawRoundedRect(-260, -120, 520, 230, 20);
+                // panel.endFill();
+                // dialogContainer.addChild(panel);
+
+                const title = new Text("¿BORRAR TODO EL PROGRESO?", {
+                    fontFamily: "Montserrat ExtraBold",
+                    fill: 0xFFFFFF,
+                    align: "center",
+                    fontSize: 28,
+                    lineHeight: 46,
+                    letterSpacing: 6
+                });
+                title.anchor.set(0.5);
+                title.position.set(0, -60);
+                dialogContainer.addChild(title);
+
+                const confirmButton = new SongButton("SÍ, BORRAR", 300);
+                confirmButton.position.set(-140, 60);
+                confirmButton.scale.set(0.8);
+                confirmButton.setButtonColor(0x00C18C);
+                dialogContainer.addChild(confirmButton);
+                confirmButton.on("pointerup", () => {
+                    Manager.resetProgress();
+                    Manager.changeScene(new SongGame_Title());
+                });
+
+                const cancelButton = new SongButton("CANCELAR", 300);
+                cancelButton.position.set(140, 60);
+                cancelButton.scale.set(0.8);
+                cancelButton.setButtonColor(0x555555);
+                dialogContainer.addChild(cancelButton);
+                cancelButton.on("pointerup", () => {
+                    overlay.destroy({ children: true });
+                });
+
+                this.addChild(overlay);
+
+                new Tween(dimBackground)
+                    .to({ alpha: 1 }, 250)
+                    .start()
+                    .easing(Easing.Quadratic.InOut);
+
+                new Tween(dialogContainer.scale)
+                    .to({ x: 1, y: 1 }, 350)
+                    .start()
+                    .easing(Easing.Back.Out);
+            };
+
+            const buttonReset = new SongButton("Borrar\nProgreso", 240);
+            buttonReset.position.set(Manager.width + 300, utilityButtonsY);
+            buttonReset.alpha = 0.7;
+            buttonReset.scale.set(0.8);
+            buttonReset.setLabelOffsetY(-4);
+            this.addChild(buttonReset);
+            buttonReset.on("pointerup", () => {
+                sound.stopAll();
+                openResetModal();
+            });
+
+
+            const muteWidth = 110;
+            const fullscreenWidth = 110;
+            const resetWidth = 240;
+            const spacing = 20;
+
+            const groupWidth = muteWidth + fullscreenWidth + resetWidth + spacing * 2;
+            const groupStartX = Manager.width / 2 - groupWidth / 2;
+
+            const muteTargetX = groupStartX + muteWidth / 2;
+            const fullscreenTargetX = muteTargetX + muteWidth / 2 + spacing + fullscreenWidth / 2;
+            const resetTargetX = fullscreenTargetX + fullscreenWidth / 2 + spacing + resetWidth / 2;
 
             new Tween(buttonMute)
-                .to({ x: 280 }, 500)
+                .to({ x: muteTargetX }, 500)
                 .start()
                 .easing(Easing.Quintic.In)
 
             new Tween(buttonFullscreen)
-                .to({ x: 450 }, 500)
+                .to({ x: fullscreenTargetX }, 500)
+                .start()
+                .easing(Easing.Quintic.In)
+
+            new Tween(buttonReset)
+                .to({ x: resetTargetX }, 500)
                 .start()
                 .easing(Easing.Quintic.In)
 

@@ -254,7 +254,7 @@ export class SongGame_Quiz extends Container implements IScene {
 
                             let buttonText = "Siguiente";
                             if (!isUltimateQuiz) {
-                                Manager.levelsAvailable[Manager.currentLevel + 1] = true;
+                                Manager.unlockLevel(Manager.currentLevel + 1);
                             } else {
                                 buttonText = "Jugar de nuevo"
                             }
